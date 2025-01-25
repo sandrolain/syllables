@@ -5,16 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <style>
+      :root {
+        --primary-color: #007aff;
+        --hover-color: #005bb5;
+      }
       body {
         font-family: "Arial", sans-serif;
       }
       #random-syllable {
-        font-size: 20vw;
+        font-size: 16vw;
         text-align: center;
-        margin: 0 0 0.2em 0;
+        margin: 0;
         text-transform: uppercase;
         line-height: 1em;
         height: 1em;
+        text-decoration: underline;
+        text-decoration-color: var(--primary-color);
+      }
+      #random-syllable-min {
+        font-size: 8vw;
+        text-align: center;
+        margin: 0 0 0.5em 0;
+        text-transform: lowercase;
+        line-height: 1em;
+        height: 1em;
+        text-decoration: underline;
+        text-decoration-color: var(--primary-color);
       }
       #root {
         display: flex;
@@ -24,33 +40,92 @@
         height: 100vh;
       }
       #button {
-        background-color: #007aff;
+        background-color: var(--primary-color);
         border: none;
         color: white;
         padding: 0.5em 1em;
         text-align: center;
         text-decoration: none;
         display: inline-block;
-        font-size: 2vw;
+        font-size: max(2vw, 20px);
         margin: 0.2em 0.1em;
         cursor: pointer;
         border-radius: 0.2em;
         transition: all 0.3s ease;
       }
       #button:hover {
-        background-color: #005bb5;
+        background-color: var(--hover-color);
       }
       #button:active {
-        background-color: #005bb5;
+        background-color: var(--hover-color);
         box-shadow: 0px 0.1em 0.1em rgba(0, 0, 0, 0.15);
         transform: translateY(0.05em);
       }
+      .toggle-button {
+        display: inline-block;
+        padding: 0.5em 1em;
+        margin: 0.2em;
+        border: 2px solid var(--primary-color);
+        border-radius: 0.2em;
+        background-color: #fff;
+        color: var(--primary-color);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .toggle-button.active {
+        background-color: var(--primary-color);
+        color: #fff;
+      }
     </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
   </head>
   <body>
     <div id="root">
       <p id="random-syllable"></p>
-      <button id="button" onclick="showRandomSyllable()">!</button>
+      <p id="random-syllable-min"></p>
+      <button id="button" onclick="showRandomSyllable()">
+        <i class="fas fa-sync-alt"></i>
+      </button>
+      <div class="toggle-button-container">
+        <div
+          class="toggle-button"
+          id="add-s-toggle"
+          onclick="toggleButton(this)"
+        >
+          Add "s"
+        </div>
+        <div
+          class="toggle-button"
+          id="two-consonants-toggle"
+          onclick="toggleButton(this)"
+        >
+          Add second consonant
+        </div>
+        <div
+          class="toggle-button"
+          id="double-toggle"
+          onclick="toggleButton(this)"
+        >
+          Use doubles
+        </div>
+        <div
+          class="toggle-button"
+          id="color-toggle"
+          onclick="toggleExclusive(this, 'color')"
+        >
+          Show color
+        </div>
+        <div
+          class="toggle-button"
+          id="number-toggle"
+          onclick="toggleExclusive(this, 'number')"
+        >
+          Show numbers
+        </div>
+      </div>
     </div>
     <script>
       const consonants = [
@@ -59,9 +134,6 @@
         "d",
         "f",
         "g",
-        //"h",
-        //"j",
-        //"k",
         "l",
         "m",
         "n",
@@ -71,41 +143,129 @@
         "s",
         "t",
         "v",
-        //"w",
         "x",
         "z",
+      ];
+      const doubles = [
+        "BL",
+        "BR",
+        "CL",
+        "CR",
+        "FL",
+        "FR",
+        "GL",
+        "GR",
+        "PL",
+        "PR",
+        "TR",
+        "DR",
+        "GN",
+        "PN",
+      ];
+      const colors = [
+        "rosso",
+        "arancione",
+        "giallo",
+        "verde",
+        "blu",
+        "indaco",
+        "viola",
+        "nero",
+        "bianco",
+        "marrone",
+        "rosa",
+        "grigio",
+        "porpora",
+        "turchese",
+        "argento",
+        "oro",
+      ];
+      const numbers = [
+        "zero",
+        "uno",
+        "due",
+        "tre",
+        "quattro",
+        "cinque",
+        "sei",
+        "sette",
+        "otto",
+        "nove",
+        "dieci",
       ];
       const vowels = ["a", "e", "i", "o", "u"];
 
       function getRandomSyllable() {
-        const addS = Math.random() < 0.5;
-        const twoConsonants = Math.random() < 0.5;
+        const addS = document
+          .getElementById("add-s-toggle")
+          .classList.contains("active");
+        const twoConsonants = document
+          .getElementById("two-consonants-toggle")
+          .classList.contains("active");
+        const useDoubles = document
+          .getElementById("double-toggle")
+          .classList.contains("active");
+        const showColor = document
+          .getElementById("color-toggle")
+          .classList.contains("active");
+        const showNumbers = document
+          .getElementById("number-toggle")
+          .classList.contains("active");
         const randomVowel = vowels[Math.floor(Math.random() * vowels.length)];
         let randomConsonant,
           randomConsonant2 = "";
 
+        const consonantSet = useDoubles ? doubles : consonants;
+
         if (randomVowel === "e" || randomVowel === "i") {
           const specialConsonants = ["ch", "gh"];
-          const allConsonants = consonants.concat(specialConsonants);
+          const allConsonants = consonantSet.concat(specialConsonants);
           randomConsonant =
             allConsonants[Math.floor(Math.random() * allConsonants.length)];
         } else {
           randomConsonant =
-            consonants[Math.floor(Math.random() * consonants.length)];
+            consonantSet[Math.floor(Math.random() * consonantSet.length)];
         }
         if (addS && randomConsonant !== "z" && randomConsonant !== "x") {
           randomConsonant = "s" + randomConsonant;
         } else if (twoConsonants) {
           randomConsonant2 =
-            consonants[Math.floor(Math.random() * consonants.length)];
+            consonantSet[Math.floor(Math.random() * consonantSet.length)];
         }
 
-        return randomConsonant + randomVowel + randomConsonant2;
+        if (showColor) {
+          return colors[Math.floor(Math.random() * colors.length)];
+        } else if (showNumbers) {
+          return numbers[Math.floor(Math.random() * numbers.length)];
+        } else {
+          return randomConsonant + randomVowel + randomConsonant2;
+        }
       }
 
       function showRandomSyllable() {
-        document.getElementById("random-syllable").innerHTML =
-          getRandomSyllable();
+        const xt = getRandomSyllable();
+        document.getElementById("random-syllable").innerHTML = xt.toUpperCase();
+        document.getElementById("random-syllable-min").innerHTML =
+          xt.toLowerCase();
+      }
+
+      function toggleButton(element) {
+        element.classList.toggle("active");
+        showRandomSyllable();
+      }
+
+      function toggleExclusive(element, type) {
+        const colorToggle = document.getElementById("color-toggle");
+        const numberToggle = document.getElementById("number-toggle");
+
+        if (type === "color") {
+          numberToggle.classList.remove("active");
+        } else if (type === "number") {
+          colorToggle.classList.remove("active");
+        }
+
+        element.classList.toggle("active");
+        showRandomSyllable();
       }
 
       document.addEventListener("DOMContentLoaded", showRandomSyllable);
