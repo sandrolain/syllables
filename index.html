@@ -1,8 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="icon-192x192.png" />
     <title>Document</title>
     <style>
       :root {
@@ -38,6 +43,9 @@
         align-items: center;
         justify-content: center;
         height: 100vh;
+      }
+      .toggle-button-container {
+        text-align: center;
       }
       #button {
         background-color: var(--primary-color);
@@ -81,6 +89,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
+    <meta name="mobile-web-app-capable" content="yes" />
   </head>
   <body>
     <div id="root">
@@ -95,35 +104,46 @@
           id="add-s-toggle"
           onclick="toggleButton(this)"
         >
-          Add "s"
+          Aggiungi "s"
         </div>
         <div
           class="toggle-button"
           id="two-consonants-toggle"
           onclick="toggleButton(this)"
         >
-          Add second consonant
+          Aggiungi seconda consonante
         </div>
         <div
           class="toggle-button"
           id="double-toggle"
           onclick="toggleButton(this)"
         >
-          Use doubles
+          Usa doppie
         </div>
+        <div class="toggle-button" id="min-toggle" onclick="toggleButton(this)">
+          Solo min
+        </div>
+        <br />
         <div
           class="toggle-button"
           id="color-toggle"
           onclick="toggleExclusive(this, 'color')"
         >
-          Show color
+          Mostra colori
         </div>
         <div
           class="toggle-button"
           id="number-toggle"
           onclick="toggleExclusive(this, 'number')"
         >
-          Show numbers
+          Mostra numeri
+        </div>
+        <div
+          class="toggle-button"
+          id="animal-toggle"
+          onclick="toggleExclusive(this, 'animal')"
+        >
+          Mostra animali
         </div>
       </div>
     </div>
@@ -193,6 +213,74 @@
         "nove",
         "dieci",
       ];
+      /*************  ✨ Codeium Command 🌟  *************/
+      const animals = [
+        "ape",
+        "cane",
+        "cavallo",
+        "cicogna",
+        "cigno",
+        "elefante",
+        "farfalla",
+        "gallina",
+        "gatto",
+        "giraffa",
+        "giraffa",
+        "ippopotamo",
+        "leone",
+        "lupo",
+        "mucca",
+        "orso",
+        "pappagallo",
+        "pulcino",
+        "rana",
+        "scimmia",
+        "serpente",
+        "struzzo",
+        "tigre",
+        "cinghiale",
+        "coccinella",
+        "colomba",
+        "coniglio",
+        "corvo",
+        "criceto",
+        "delfino",
+        "dromedario",
+        "elefante marino",
+        "faina",
+        "falco",
+        "gazzella",
+        "ghepardo",
+        "gufo",
+        "istrice",
+        "lince",
+        "lontra",
+        "lucciola",
+        "maiale",
+        "maialino",
+        "marmotta",
+        "mulo",
+        "nibbio",
+        "ostrica",
+        "panda",
+        "pantera",
+        "pappagallo",
+        "pecora",
+        "pipistrello",
+        "pulce",
+        "ratto",
+        "riccio",
+        "salmone",
+        "scoiattolo",
+        "tartaruga",
+        "topo",
+        "tortora",
+        "tritone",
+        "uccello",
+        "verme",
+      ];
+      /******  3007f143-dd6c-43d7-a9eb-cdea7818e115  *******/
+
       const vowels = ["a", "e", "i", "o", "u"];
 
       function getRandomSyllable() {
@@ -205,15 +293,23 @@
         const useDoubles = document
           .getElementById("double-toggle")
           .classList.contains("active");
+        const showMin = document
+          .getElementById("min-toggle")
+          .classList.contains("active");
         const showColor = document
           .getElementById("color-toggle")
           .classList.contains("active");
         const showNumbers = document
           .getElementById("number-toggle")
           .classList.contains("active");
+        const showAnimals = document
+          .getElementById("animal-toggle")
+          .classList.contains("active");
         const randomVowel = vowels[Math.floor(Math.random() * vowels.length)];
         let randomConsonant,
           randomConsonant2 = "";
+
+        document.getElementById("random-syllable").hidden = showMin;
 
         const consonantSet = useDoubles ? doubles : consonants;
 
@@ -235,11 +331,14 @@
 
         if (showColor) {
           return colors[Math.floor(Math.random() * colors.length)];
-        } else if (showNumbers) {
-          return numbers[Math.floor(Math.random() * numbers.length)];
-        } else {
-          return randomConsonant + randomVowel + randomConsonant2;
         }
+        if (showNumbers) {
+          return numbers[Math.floor(Math.random() * numbers.length)];
+        }
+        if (showAnimals) {
+          return animals[Math.floor(Math.random() * animals.length)];
+        }
+        return randomConsonant + randomVowel + randomConsonant2;
       }
 
       function showRandomSyllable() {
@@ -257,11 +356,21 @@
       function toggleExclusive(element, type) {
         const colorToggle = document.getElementById("color-toggle");
         const numberToggle = document.getElementById("number-toggle");
+        const animalToggle = document.getElementById("animal-toggle");
 
-        if (type === "color") {
-          numberToggle.classList.remove("active");
-        } else if (type === "number") {
-          colorToggle.classList.remove("active");
+        switch (type) {
+          case "color":
+            numberToggle.classList.remove("active");
+            animalToggle.classList.remove("active");
+            break;
+          case "number":
+            colorToggle.classList.remove("active");
+            animalToggle.classList.remove("active");
+            break;
+          case "animal":
+            colorToggle.classList.remove("active");
+            numberToggle.classList.remove("active");
+            break;
         }
 
         element.classList.toggle("active");
