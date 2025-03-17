@@ -351,21 +351,26 @@ function getRandomSyllable() {
   }
 
   if (showColor) {
-    return colors[Math.floor(Math.random() * colors.length)];
+    return splitGraphemes(colors[Math.floor(Math.random() * colors.length)]);
   }
   if (showNumbers) {
-    return numbers[Math.floor(Math.random() * numbers.length)];
+    return splitGraphemes(numbers[Math.floor(Math.random() * numbers.length)]);
   }
   if (showAnimals) {
-    return animals[Math.floor(Math.random() * animals.length)];
+    return splitGraphemes(animals[Math.floor(Math.random() * animals.length)]);
   }
   if (showNames) {
-    return names[Math.floor(Math.random() * names.length)];
+    return splitGraphemes(names[Math.floor(Math.random() * names.length)]);
   }
   if (showThings) {
-    return things[Math.floor(Math.random() * things.length)];
+    return splitGraphemes(things[Math.floor(Math.random() * things.length)]);
   }
   return randomConsonant + randomVowel + randomConsonant2;
+}
+
+function splitGraphemes(word) {
+  const si = sillabizza(word);
+  return si.map((s) => `<span>${s}</span>`).join("");
 }
 
 function showRandomSyllable() {

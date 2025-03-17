@@ -6,7 +6,7 @@ body {
   font-family: "Arial", sans-serif;
 }
 #random-syllable {
-  font-size: 16vw;
+  font-size: 12vw;
   text-align: center;
   margin: 0;
   text-transform: uppercase;
@@ -14,11 +14,17 @@ body {
   height: 1em;
   text-decoration: underline;
   text-decoration-color: var(--primary-color);
+
+  span {
+    display: inline-block;
+    border: 1px solid var(--primary-color);
+    border-radius: 0.2em;
+  }
 }
 #random-syllable-min {
   font-size: 8vw;
   text-align: center;
-  margin: 0 0 0.5em 0;
+  margin: 0.5em 0 0.5em 0;
   text-transform: lowercase;
   line-height: 1em;
   height: 1em;
